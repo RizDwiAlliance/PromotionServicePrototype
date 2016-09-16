@@ -48,24 +48,24 @@ class PromotionTableViewController: UITableViewController, PromotionAlertDelegat
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1;
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //return the number of rows        
         return Promotions.count;
     }
 
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "PromotionTableViewCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! PromotionTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! PromotionTableViewCell
 
         // Configure the cell...
         
-        let promo = Promotions[indexPath.row];
+        let promo = Promotions[(indexPath as NSIndexPath).row];
         cell.promotionCellLabel.text = "\(promo.promotionDescription)";
         cell.rewardLabel.text = "Reward: \(promo.reward)";
         cell.senderRewardLabel.text = "Sender Reward: \(promo.senderReward)";
@@ -114,35 +114,35 @@ class PromotionTableViewController: UITableViewController, PromotionAlertDelegat
     
     //Implementation of PromotionAlertProtocol
     
-    func promotionRedeemed(promotion: Promotion) {
+    func promotionRedeemed(_ promotion: Promotion) {
         //Display alert
         let message = "Congratulations, you're successfully redeemed \(promotion.promotionDescription) for \(promotion.reward) gold";
-        let alert = UIAlertController(title: "Promotion Redeemed", message: message, preferredStyle: .Alert);
-        let action = UIAlertAction(title: "OK", style: .Default, handler: nil);
+        let alert = UIAlertController(title: "Promotion Redeemed", message: message, preferredStyle: .alert);
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil);
         alert.addAction(action);
-        presentViewController(alert, animated: true, completion: nil);
+        present(alert, animated: true, completion: nil);
     }
     
     func promotionRejected() {
         //display alert
-        let alert = UIAlertController(title: "Promotion Rejected", message: "Your promotion is currently invalid", preferredStyle:  .Alert);
-        let action = UIAlertAction(title: "OK", style: .Default, handler: nil);
+        let alert = UIAlertController(title: "Promotion Rejected", message: "Your promotion is currently invalid", preferredStyle:  .alert);
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil);
         alert.addAction(action);
-        presentViewController(alert, animated: true, completion: nil);
+        present(alert, animated: true, completion: nil);
     }
     
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "SendPromo" {
             
-            let sendPromoViewController = segue.destinationViewController as! SendPromoViewController;
+            let sendPromoViewController = segue.destination as! SendPromoViewController;
             
             //get cell that generated the view
             if let selectedPromoCell = sender as? PromotionTableViewCell {
-                let indexPath = tableView.indexPathForCell(selectedPromoCell)!
-                let selectedPromo = gameController.availablePromotions[indexPath.row];
+                let indexPath = tableView.indexPath(for: selectedPromoCell)!
+                let selectedPromo = gameController.availablePromotions[(indexPath as NSIndexPath).row];
                 sendPromoViewController.promo = selectedPromo;
             }
         }

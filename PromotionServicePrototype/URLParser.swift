@@ -12,28 +12,28 @@ import Foundation
 class URLParser : NSObject {
     
     //generate a valid URL that can be sent in a message
-    func getURL(promo: Promotion) -> NSURL {
+    func getURL(_ promo: Promotion) -> URL {
         
-        let url = NSURLComponents();
+        var url = URLComponents();
         url.scheme = "PromotionService";
-        let senderQueryItem = NSURLQueryItem(name: "sender", value: gameController.user!.customerID?.description);
-        let promoQueryItem = NSURLQueryItem(name: "promoID", value: promo.promotionID.description);
+        let senderQueryItem = URLQueryItem(name: "sender", value: gameController.user!.customerID?.description);
+        let promoQueryItem = URLQueryItem(name: "promoID", value: promo.promotionID.description);
         
         url.queryItems = [senderQueryItem, promoQueryItem];
         url.path = "/promotion"
         url.host = ""
         
-        return url.URL!;
+        return url.url!;
     }
     
     //returns a string of the promotion URL
-    func getURLString(promotion: Promotion) -> String {
+    func getURLString(_ promotion: Promotion) -> String {
         let url = getURL(promotion);
         return url.description;
     }
     
     //Finds the promotion in the available promotions
-    func getPromotionFromID(id: Int) -> Promotion? {
+    func getPromotionFromID(_ id: Int) -> Promotion? {
         let promotions = gameController.availablePromotions;
         
         for p in promotions {
@@ -46,8 +46,8 @@ class URLParser : NSObject {
     }
     
     
-    func checkURL(url: NSURL) {
-        if let urlComp = NSURLComponents(URL: url, resolvingAgainstBaseURL: false) { //create a NSURLComponents from NSURL
+    func checkURL(_ url: URL) {
+        if let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false) { //create a NSURLComponents from NSURL
             
             //if url is promo url
             if url.path == "/promotion" {

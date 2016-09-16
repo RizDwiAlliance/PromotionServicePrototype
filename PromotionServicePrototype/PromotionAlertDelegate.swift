@@ -10,6 +10,6 @@ import Foundation
 
 //protocol that allows handlers to handle promotion alerts
 protocol PromotionAlertDelegate {
-    func promotionRedeemed(promotion: Promotion);
+    func promotionRedeemed(_ promotion: Promotion);
     func promotionRejected()
 }

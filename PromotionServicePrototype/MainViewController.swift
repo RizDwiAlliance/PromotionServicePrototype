@@ -19,7 +19,7 @@ class MainViewController: UIViewController, PromotionAlertDelegate {
         super.viewDidLoad();
         
         //Add this view as an observer to events
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MainViewController.updateGold), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.updateGold), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
         
         //self the alert promotion delegate in the controller to this view
         gameController.promotionAlertDelegate = self;
@@ -40,13 +40,13 @@ class MainViewController: UIViewController, PromotionAlertDelegate {
     
     //Implementation of PromotionAlertProtocol
     
-    func promotionRedeemed(promotion: Promotion) {
+    func promotionRedeemed(_ promotion: Promotion) {
         //Display alert
         let message = "Congratulations, you're successfully redeemed \(promotion.promotionDescription) for \(promotion.reward) gold";
-        let alert = UIAlertController(title: "Promotion Redeemed", message: message, preferredStyle: .Alert);
-        let action = UIAlertAction(title: "OK", style: .Default, handler: nil);
+        let alert = UIAlertController(title: "Promotion Redeemed", message: message, preferredStyle: .alert);
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil);
         alert.addAction(action);
-        presentViewController(alert, animated: true, completion: nil);
+        present(alert, animated: true, completion: nil);
         
         //update the gold label
         updateGold();
@@ -56,15 +56,15 @@ class MainViewController: UIViewController, PromotionAlertDelegate {
     
     func promotionRejected() {
         //display alert
-        let alert = UIAlertController(title: "Promotion Rejected", message: "Your promotion is currently invalid", preferredStyle:  .Alert);
-        let action = UIAlertAction(title: "OK", style: .Default, handler: nil);
+        let alert = UIAlertController(title: "Promotion Rejected", message: "Your promotion is currently invalid", preferredStyle:  .alert);
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil);
         alert.addAction(action);
-        presentViewController(alert, animated: true, completion: nil);
+        present(alert, animated: true, completion: nil);
     }
     
     deinit {
         //remove observer from notification center when disposed
-        NSNotificationCenter.defaultCenter().removeObserver(self);
+        NotificationCenter.default.removeObserver(self);
     }
     
 }

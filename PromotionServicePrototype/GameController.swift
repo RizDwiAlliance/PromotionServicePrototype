@@ -59,25 +59,25 @@ class GameController {
     //Ideally this would be downloaded from the database
     func loadPromotions() {
         
-        let calendar = NSCalendar.currentCalendar();
+        let calendar = Calendar.current;
         
         //Expired Promotion
         let promo1ID = 7;
         let promo1Description = "New Years Promotion";
         
-        let promo1DateComp = NSDateComponents();
+        var promo1DateComp = DateComponents();
         promo1DateComp.day = 1;
         promo1DateComp.month = 1;
         promo1DateComp.year = 2016;
-        promo1DateComp.timeZone = NSTimeZone(name: "PST");
-        let promo1Date = calendar.dateFromComponents(promo1DateComp);
+        (promo1DateComp as NSDateComponents).timeZone = TimeZone(identifier: "PST");
+        let promo1Date = calendar.date(from: promo1DateComp);
         
-        let promo1End = NSDateComponents();
+        var promo1End = DateComponents();
         promo1End.day = 14;
         promo1End.month = 1;
         promo1End.year = 2016;
-        promo1End.timeZone = NSTimeZone(name: "PST");
-        let promo1EndDate = calendar.dateFromComponents(promo1End);
+        (promo1End as NSDateComponents).timeZone = TimeZone(identifier: "PST");
+        let promo1EndDate = calendar.date(from: promo1End);
         
         let promo1Reward = 500;
         let promo1SenderReward = 50;
@@ -88,12 +88,12 @@ class GameController {
         let promo2ID = 1;
         let promo2Description = "New User";
         
-        let promo2StartComp = NSDateComponents();
+        var promo2StartComp = DateComponents();
         promo2StartComp.day = 1;
         promo2StartComp.month = 1;
         promo2StartComp.year = 1997;
-        promo2StartComp.timeZone = NSTimeZone(name: "PST");
-        let promo2StartDate = calendar.dateFromComponents(promo2StartComp);
+        (promo2StartComp as NSDateComponents).timeZone = TimeZone(identifier: "PST");
+        let promo2StartDate = calendar.date(from: promo2StartComp);
         
         let promo2Reward = 1000;
         let promo2SenderReward = 300;
@@ -105,19 +105,19 @@ class GameController {
         let promo10ID = 10;
         let promo10Description = "User Appreciation Reward";
         
-        let promo10DateComp = NSDateComponents();
+        var promo10DateComp = DateComponents();
         promo10DateComp.day = 15;
         promo10DateComp.month = 3;
         promo10DateComp.year = 2016;
-        promo10DateComp.timeZone = NSTimeZone(name: "PST");
-        let promo10Date = calendar.dateFromComponents(promo1DateComp);
+        (promo10DateComp as NSDateComponents).timeZone = TimeZone(identifier: "PST");
+        let promo10Date = calendar.date(from: promo1DateComp);
         
-        let promo10End = NSDateComponents();
+        var promo10End = DateComponents();
         promo10End.day = 14;
         promo10End.month = 1;
         promo10End.year = 2020;
-        promo10End.timeZone = NSTimeZone(name: "PST");
-        let promo10EndDate = calendar.dateFromComponents(promo1End);
+        (promo10End as NSDateComponents).timeZone = TimeZone(identifier: "PST");
+        let promo10EndDate = calendar.date(from: promo1End);
         
         let promo10Reward = 1000;
         let promo10SenderReward = 100;
@@ -131,19 +131,19 @@ class GameController {
         let promoVIPID = 100;
         let promoVIPDescription = "VIP Promotion";
         
-        let promoVIPDateComp = NSDateComponents();
+        var promoVIPDateComp = DateComponents();
         promoVIPDateComp.day = 15;
         promoVIPDateComp.month = 3;
         promoVIPDateComp.year = 2016;
-        promoVIPDateComp.timeZone = NSTimeZone(name: "PST");
-        let promoVIPDate = calendar.dateFromComponents(promo1DateComp);
+        (promoVIPDateComp as NSDateComponents).timeZone = TimeZone(identifier: "PST");
+        let promoVIPDate = calendar.date(from: promo1DateComp);
         
-        let promoVIPEnd = NSDateComponents();
+        var promoVIPEnd = DateComponents();
         promoVIPEnd.day = 14;
         promoVIPEnd.month = 1;
         promoVIPEnd.year = 2020;
-        promoVIPEnd.timeZone = NSTimeZone(name: "PST");
-        let promoVIPEndDate = calendar.dateFromComponents(promo1End);
+        (promoVIPEnd as NSDateComponents).timeZone = TimeZone(identifier: "PST");
+        let promoVIPEndDate = calendar.date(from: promo1End);
         
         let promoVIPReward = 2000;
         let promoVIPSenderReward = 500;
@@ -155,7 +155,7 @@ class GameController {
     }
     
     //Promotion is valid and needs to be awarded
-    func awardPromotion(promo: Promotion, senderID: String?) {
+    func awardPromotion(_ promo: Promotion, senderID: String?) {
         //update gold
         gold += promo.reward;
         

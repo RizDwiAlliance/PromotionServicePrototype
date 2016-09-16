@@ -30,7 +30,7 @@ class SignInViewController: UIViewController {
         gameController.gold = gameController.user!.gold;
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "regularUserSegue" {
             regularSignIn();
         }

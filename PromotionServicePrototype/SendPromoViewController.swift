@@ -24,7 +24,7 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
     @IBOutlet weak var TwitterButton: UIButton!
     
     
-    var url: NSURL? //url to be sent out in message
+    var url: URL? //url to be sent out in message
     
     var promo: Promotion?  //current promotion selected to be advertised
     
@@ -36,7 +36,7 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
             
             //Change URL Label
             let urlParser = URLParser();
-            url = urlParser.getURL(p);
+            url = urlParser.getURL(p) as URL;
             
             URLLabel.text = url?.description;
         }
@@ -49,7 +49,7 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
     // MARK: UITextViewDelegate
     
     //what happens when the text view controller is selected for editing
-    func textViewDidBeginEditing(textView: UITextView) {
+    func textViewDidBeginEditing(_ textView: UITextView) {
         //add a done button to the navigation bar to hide the keyboard when the user is done editing
         let doneButton = UIBarButtonItem();
         //done button properties
@@ -66,7 +66,7 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
     }
     
     //what happens when the user is done editing the textView control
-    func textViewDidEndEditing(textView: UITextView) {
+    func textViewDidEndEditing(_ textView: UITextView) {
         //hide keyboard
         promoMessageTextView.resignFirstResponder();
         //remove done button in the navigation bar
@@ -76,59 +76,59 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
     
     // MARK: MFMessageViewControllerDelegate
     
-    func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
-        controller.dismissViewControllerAnimated(true, completion: nil);
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true, completion: nil);
     }
     
     // MARK: PromotionAlertDelegate
     
-    func promotionRedeemed(promotion: Promotion) {
+    func promotionRedeemed(_ promotion: Promotion) {
         //Display alert
         let message = "Congratulations, you're successfully redeemed \(promotion.promotionDescription) for \(promotion.reward) gold";
-        let alert = UIAlertController(title: "Promotion Redeemed", message: message, preferredStyle: .Alert);
-        let action = UIAlertAction(title: "OK", style: .Default, handler: nil);
+        let alert = UIAlertController(title: "Promotion Redeemed", message: message, preferredStyle: .alert);
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil);
         alert.addAction(action);
-        presentViewController(alert, animated: true, completion: nil);
+        present(alert, animated: true, completion: nil);
     }
     
     func promotionRejected() {
-        let alert = UIAlertController(title: "Promotion Rejected", message: "Your promotion is currently invalid", preferredStyle:  .Alert);
-        let action = UIAlertAction(title: "OK", style: .Default, handler: nil);
+        let alert = UIAlertController(title: "Promotion Rejected", message: "Your promotion is currently invalid", preferredStyle:  .alert);
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil);
         alert.addAction(action);
-        presentViewController(alert, animated: true, completion: nil);
+        present(alert, animated: true, completion: nil);
     }
     
     // MARK: MFMailComposeViewControllerDelegate
-    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-        controller.dismissViewControllerAnimated(true, completion: nil);
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil);
     }
     
     // MARK: Navigation
     
     //function of cancel button in the navigation bar
-    @IBAction func cancel(sender: UIBarButtonItem) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func cancel(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: Button Actions
     
     //SMS button press
-    @IBAction func sendBySMS(sender: UIButton) {
+    @IBAction func sendBySMS(_ sender: UIButton) {
         sendMessage();
     }
 
     //Using MFMessageComposeViewController to send text
     func sendMessage() {
         //prepare text
-        var text = promoMessageTextView.text;
+        var text = promoMessageTextView.text!;
         
         //change url to add refer query item
-        let urlComp = NSURLComponents(URL: url!, resolvingAgainstBaseURL: false)
-        let referQueryItem = NSURLQueryItem(name: "refer", value: "SMS");
+        var urlComp = URLComponents(url: url!, resolvingAgainstBaseURL: false)
+        let referQueryItem = URLQueryItem(name: "refer", value: "SMS");
         urlComp?.queryItems?.append(referQueryItem);
         
-        let urlString: String = "\n\n\(urlComp!.URL!.description)";
-        text.appendContentsOf(urlString);
+        let urlString: String = "\n\n\(urlComp!.url!.description)";
+        text += urlString;
         
         
         //Check if device can send texts
@@ -138,19 +138,19 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
             smsController.messageComposeDelegate = self;  //add current view as delegate
             smsController.body = text;  //set the body of the message
             
-            self.presentViewController(smsController, animated: true, completion: nil);  //open the message compose view
+            self.present(smsController, animated: true, completion: nil);  //open the message compose view
         }
         else {
             print("Can't send texts");
-            let errorAlert = UIAlertController(title: "Can't Send text", message: "Device can't send texts...", preferredStyle: .Alert);
-            let errorAction = UIAlertAction(title: "OK", style: .Default, handler: nil);
+            let errorAlert = UIAlertController(title: "Can't Send text", message: "Device can't send texts...", preferredStyle: .alert);
+            let errorAction = UIAlertAction(title: "OK", style: .default, handler: nil);
             errorAlert.addAction(errorAction);
-            presentViewController(errorAlert, animated: true, completion: nil);
+            present(errorAlert, animated: true, completion: nil);
         }
     }
     
     //FB Button
-    @IBAction func sendByFaceBook(sender: UIButton) {
+    @IBAction func sendByFaceBook(_ sender: UIButton) {
         //TODO: Send message through facebook
         //sendOpenURL();
         sendByFacebook()
@@ -159,38 +159,38 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
     func sendByFacebook() {
         let body = promoMessageTextView.text;
         
-        let urlComp = NSURLComponents(URL: url!, resolvingAgainstBaseURL: false);
-        let referQueryItem = NSURLQueryItem(name: "refer", value: "FB");
+        var urlComp = URLComponents(url: url!, resolvingAgainstBaseURL: false);
+        let referQueryItem = URLQueryItem(name: "refer", value: "FB");
         urlComp!.queryItems! += [referQueryItem];
         
         let facebookComposeViewController = SLComposeViewController(forServiceType: SLServiceTypeFacebook);
-        if !facebookComposeViewController.setInitialText(body) {
+        if !(facebookComposeViewController?.setInitialText(body))! {
             print("did not set text");
         }
-        facebookComposeViewController.addURL(urlComp!.URL!);
+        facebookComposeViewController?.add(urlComp!.url!);
         
-        self.presentViewController(facebookComposeViewController, animated: true, completion: nil);
+        self.present(facebookComposeViewController!, animated: true, completion: nil);
     }
     
     //Twitter Button
-    @IBAction func sendByTwitter(sender: AnyObject) {
+    @IBAction func sendByTwitter(_ sender: AnyObject) {
         sendByTwitter();
     }
     
     func sendByTwitter(){
         let body = promoMessageTextView.text;
         
-        let urlComp = NSURLComponents(URL: url!, resolvingAgainstBaseURL: false);
-        let referQueryItem = NSURLQueryItem(name: "refer", value: "twt");
+        var urlComp = URLComponents(url: url!, resolvingAgainstBaseURL: false);
+        let referQueryItem = URLQueryItem(name: "refer", value: "twt");
         urlComp!.queryItems! += [referQueryItem];
         
         let twitterComposeViewController = SLComposeViewController(forServiceType: SLServiceTypeTwitter);
-        if !twitterComposeViewController.setInitialText(body) || !twitterComposeViewController.addURL(urlComp!.URL!){
+        if !(twitterComposeViewController?.setInitialText(body))! || !(twitterComposeViewController?.add(urlComp!.url!))!{
             print("Did not set text");
         }
         
         
-        self.presentViewController(twitterComposeViewController, animated: true, completion: nil);
+        self.present(twitterComposeViewController!, animated: true, completion: nil);
     }
     
     
@@ -198,40 +198,40 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
     //Create and open SMS url preloaded with text
     func sendOpenURL() {
         //add refer query to promotion URL
-        let urlComp = NSURLComponents(URL: url!, resolvingAgainstBaseURL: false)
-        let referQueryItem = NSURLQueryItem(name: "refer", value: "FB");
+        var urlComp = URLComponents(url: url!, resolvingAgainstBaseURL: false)
+        let referQueryItem = URLQueryItem(name: "refer", value: "FB");
         urlComp!.queryItems! += [referQueryItem];
         
         //create text that will be sent in the body of the message
-        var body = promoMessageTextView.text + "\n\n" + urlComp!.URL!.description;
+        var body = promoMessageTextView.text + "\n\n" + urlComp!.url!.description;
         body = prepBodyString(body);
         
         //Create URL that contains the message and open the URL
         let smsString = "sms://&body=\(body)";
         
         //ensure that the URL does not have invalid characters by encoding them with allowed characteres
-        let escapedSMSString = smsString.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!;
+        let escapedSMSString = smsString.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!;
         
         //create NSURL object and open it
-        let sms = NSURL(string: escapedSMSString);
-        UIApplication.sharedApplication().openURL(sms!);
+        let sms = URL(string: escapedSMSString);
+        UIApplication.shared.openURL(sms!);
         
         
     }
     
     //Email Button
-    @IBAction func emailButtonAction(sender: UIButton) {
+    @IBAction func emailButtonAction(_ sender: UIButton) {
         shareByEmail();
     }
     
     func shareByEmail(){
         if MFMailComposeViewController.canSendMail() {
-            let urlComp = NSURLComponents(URL: url!, resolvingAgainstBaseURL: false);
-            let referQueryItem = NSURLQueryItem(name: "refer", value: "Email");
+            var urlComp = URLComponents(url: url!, resolvingAgainstBaseURL: false);
+            let referQueryItem = URLQueryItem(name: "refer", value: "Email");
             urlComp!.queryItems! += [referQueryItem];
             
             //let body = promoMessageTextView.text + "\n\n" + urlComp!.URL!.description;
-            let body = "<p>\(promoMessageTextView.text)</p><p><a href=\"\(urlComp!.URL!.description)\">\(promo!.promotionDescription)</a></p>";
+            let body = "<p>\(promoMessageTextView.text)</p><p><a href=\"\(urlComp!.url!.description)\">\(promo!.promotionDescription)</a></p>";
             let subject = "Promotion Service (\(promo!.promotionDescription))";
             
             let emailController = MFMailComposeViewController();
@@ -240,14 +240,14 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
             emailController.setMessageBody(body, isHTML: true);
             emailController.setSubject(subject);
             
-            self.presentViewController(emailController, animated: true, completion: nil);
+            self.present(emailController, animated: true, completion: nil);
         }
         else {
             print("Can't send email");
-            let errorAlert = UIAlertController(title: "Can't send email", message: "This device cannot send emails", preferredStyle: .Alert);
-            let errorAction = UIAlertAction(title: "OK", style: .Default, handler: nil);
+            let errorAlert = UIAlertController(title: "Can't send email", message: "This device cannot send emails", preferredStyle: .alert);
+            let errorAction = UIAlertAction(title: "OK", style: .default, handler: nil);
             errorAlert.addAction(errorAction);
-            presentViewController(errorAlert, animated: true, completion: nil);
+            present(errorAlert, animated: true, completion: nil);
         }
         
     }
@@ -255,9 +255,9 @@ class SendPromoViewController: UIViewController, UITextViewDelegate, UINavigatio
     
     
     //encode special characters with url appropriate encodings
-    func prepBodyString(b: String) -> String {
-        var body = b.stringByReplacingOccurrencesOfString("&", withString: "%26");
-        body = body.stringByReplacingOccurrencesOfString("\n", withString: "%0A");
+    func prepBodyString(_ b: String) -> String {
+        var body = b.replacingOccurrences(of: "&", with: "%26");
+        body = body.replacingOccurrences(of: "\n", with: "%0A");
         return body;
     }
 }

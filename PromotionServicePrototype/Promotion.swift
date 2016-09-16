@@ -14,8 +14,8 @@ class Promotion : NSObject {
     
     let promotionID : Int;
     let promotionDescription : String
-    let startDate : NSDate;
-    let endDate : NSDate?
+    let startDate : Date;
+    let endDate : Date?
     let reward : Int;
     let senderReward : Int;
     let VIPPromotion : Bool;
@@ -25,10 +25,10 @@ class Promotion : NSObject {
         //check if promotion has already been redeemed
         if !gameController.user!.promotionsRedeemed.contains(promotionID) {
             //check if today's date is valid
-            let today = NSDate();
-            if today.compare(startDate) == NSComparisonResult.OrderedDescending {  //if today is greater than promo start date
+            let today = Date();
+            if today.compare(startDate) == ComparisonResult.orderedDescending {  //if today is greater than promo start date
                 if let endDate = endDate {  //if there is an end date to the promo
-                    if today.compare(endDate) == NSComparisonResult.OrderedAscending {  //if today is less than promo end date
+                    if today.compare(endDate) == ComparisonResult.orderedAscending {  //if today is less than promo end date
                         return true;
                     }
                 }
@@ -47,7 +47,7 @@ class Promotion : NSObject {
     
     
     // MARK: Initializers
-    init(promotionID: Int, promoDescription: String, startDate: NSDate, endDate: NSDate?, reward: Int, senderReward: Int, VIP: Bool) {
+    init(promotionID: Int, promoDescription: String, startDate: Date, endDate: Date?, reward: Int, senderReward: Int, VIP: Bool) {
         self.promotionID = promotionID;
         self.promotionDescription = promoDescription;
         self.startDate = startDate;
